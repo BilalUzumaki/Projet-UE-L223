@@ -9,7 +9,7 @@
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-        <link rel="stylesheet" href="<?= SITE_URL ?>/assets/css/style.css">
+        <link rel="stylesheet" href="<?= SITE_URL ?>/view/assets/css/style.css">
     </head>
 
     <body>

@@ -6,7 +6,7 @@ define('DB_USER', 'root');
 define('DB_PASS', '');
 
 // Website URL (match development server)
-define('SITE_URL', 'http://localhost:223'); 
+define('SITE_URL', 'http://localhost:223/Projet-UE-L223/'); 
 
 // Database singleton compatible avec Database::getInstance()
 

@@ -1,5 +1,5 @@
 <?php
-
+require_once(__DIR__ . "/../../model/php/RecipeModel.php");
 class RecipeController {
 
     public function list() {
@@ -34,7 +34,7 @@ class RecipeController {
             $r['totalTime'] = ($r['prep_time'] ?? 0) + ($r['cook_time'] ?? 0);
         }
 
-        include __DIR__ . '/../view/recipes.php';
+        include(__DIR__ . "/../../view/php/recipes.php");
     }
 
     public function view() {
@@ -59,14 +59,14 @@ class RecipeController {
         $ingredients  = array_filter(array_map('trim', explode("\n", $recipe['ingredients'] ?? '')));
         $instructions = array_filter(array_map('trim', explode("\n", $recipe['instructions'] ?? '')));
 
-        include __DIR__ . '/../view/recipe.php';
+        include(__DIR__ . "/../../view/php/recipe.php");
     }
 
     public function add() {
-        //if (!isset($_SESSION['user'])) {
-        //    header("Location: index.php?page=login");
-        //    exit;
-        //}
+        if (!isset($_SESSION['user'])) {
+            header("Location: index.php?page=login");
+            exit;
+        }
 
         $error = '';
         $success = false;
@@ -127,6 +127,6 @@ class RecipeController {
             'Snack','Side dish','Sauce','Beverage','Other'
         ];
 
-        include __DIR__ . '/../view/add_recipe.php';
+        include(__DIR__ . "/../../view/php/add_recipe.php");
     }
 }

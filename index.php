@@ -4,11 +4,11 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 session_start();
 
-require 'model/Database.php';
-require 'model/UserModel.php';
-require 'model/RecipeModel.php';
-require 'controller/UserController.php';
-require 'controller/RecipeController.php';
+require 'model/php/Database.php';
+require 'model/php/UserModel.php';
+require 'model/php/RecipeModel.php';
+require 'controller/php/UserController.php';
+require 'controller/php/RecipeController.php';
 
 $page = $_GET['page'] ?? 'home';
 
@@ -38,7 +38,7 @@ switch($page) {
         $controller->list();
         break;
     default:
-        require_once 'model/RecipeModel.php';
+        require_once 'model/php/RecipeModel.php';
         $recipes = Recipe::latest(5);
-        include 'view/home.php';
+        include 'view/php/home.php';
 }

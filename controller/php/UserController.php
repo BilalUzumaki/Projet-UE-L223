@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../model/UserModel.php';
+require_once(__DIR__ . "/../../model/php/UserModel.php");
 
 class UserController {
 
@@ -27,7 +27,7 @@ class UserController {
             }
         }
 
-        include __DIR__ . '/../view/login.php';
+        include(__DIR__ . "/../../view/php/login.php");
     }
 
     public function register() {
@@ -53,7 +53,7 @@ class UserController {
             }
         }
 
-        include __DIR__ . '/../view/register.php';
+        include(__DIR__ . "/../../view/php/register.php");
     }
 
     public function logout() {
