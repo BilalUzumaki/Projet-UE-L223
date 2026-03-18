@@ -37,6 +37,30 @@ switch($page) {
         $controller = new RecipeController();
         $controller->list();
         break;
+    case 'profile':
+        $controller = new UserController();
+        $controller->profile();
+        break;
+    case 'edit_recipe':
+        $controller = new RecipeController();
+        $controller->edit();
+        break;
+    case 'edit_profile':
+        $controller = new UserController();
+        $controller->editProfile();
+        break;
+    case 'profile_recipes':
+        $controller = new UserController();
+        $controller->profileRecipes();
+        break;
+    case 'delete_recipe':
+        $controller = new RecipeController();
+        $controller->delete();
+        break;
+    case 'toggle_favorite':
+        $controller = new RecipeController();
+        $controller->toggleFavorite();
+        break;
     default:
         require_once 'model/php/RecipeModel.php';
         $recipes = Recipe::latest(5);

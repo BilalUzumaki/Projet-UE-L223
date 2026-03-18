@@ -62,4 +62,104 @@ class UserController {
         header("Location: index.php");
         exit;
     }
+
+    public function profile() {
+        if (session_status() === PHP_SESSION_NONE) session_start();
+
+        if (!isset($_SESSION['user'])) {
+            header("Location: index.php?page=login");
+            exit;
+        }
+
+        include(__DIR__ . "/../../view/php/profile.php");
+    }
+
+    public function profileRecipes() {
+        if (session_status() === PHP_SESSION_NONE) session_start();
+
+        $user = $_SESSION['user'] ?? null;
+
+        if (!$user) {
+            header("Location: index.php?page=login");
+            exit;
+        }
+
+        $type = $_GET['type'] ?? 'favorites';
+
+        switch($type) {
+            case 'my_recipes':
+                $recipes = Recipe::byUser($user['id']);
+                $title = "My Recipes";
+                break;
+
+            case 'history':
+                $recipes = Recipe::history($user['id']);
+                $title = "History";
+                break;
+
+            case 'favorites':
+            default:
+                $recipes = Recipe::favorites($user['id']);
+                $title = "Favorites";
+                break;
+        }
+
+        include(__DIR__ . "/../../view/php/profile_recipes.php");
+    }
+
+    public function editProfile() {
+        if (session_status() === PHP_SESSION_NONE) session_start();
+
+        $user = $_SESSION['user'] ?? null;
+
+        if (!$user) {
+            header("Location: index.php?page=login");
+            exit;
+        }
+
+        $error = '';
+        $success = false;
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $username = trim($_POST['username']);
+            $email    = trim($_POST['email']);
+            $phone    = trim($_POST['phone']);
+
+            if (!$username || !$email) {
+                $error = "Name and email are required.";
+            } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $error = "Invalid email.";
+            } else {
+
+                $avatarPath = null;
+
+                // upload image
+                if (!empty($_FILES['avatar']['name'])) {
+                    $uploadDir = 'uploads/';
+                    if (!is_dir($uploadDir)) mkdir($uploadDir);
+
+                    $filename = time() . '_' . basename($_FILES['avatar']['name']);
+                    $target = $uploadDir . $filename;
+
+                    move_uploaded_file($_FILES['avatar']['tmp_name'], $target);
+                    $avatarPath = $target;
+                }
+
+                User::updateFull($user['id'], $username, $email, $phone, $avatarPath);
+
+                // update session
+                $_SESSION['user']['username'] = $username;
+                $_SESSION['user']['email'] = $email;
+                $_SESSION['user']['phone'] = $phone;
+
+                if ($avatarPath) {
+                    $_SESSION['user']['avatar'] = $avatarPath;
+                }
+
+                $success = true;
+            }
+        }
+
+        include(__DIR__ . "/../../view/php/edit_profile.php");
+    }
 }

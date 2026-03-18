@@ -21,4 +21,19 @@ class User {
         }
         return false;
     }
+
+    public static function updateFull($id, $username, $email, $phone, $avatar = null) {
+        if ($avatar) {
+            $stmt = Database::getInstance()->prepare("
+                UPDATE users SET username=?, email=?, phone=?, avatar=? WHERE id=?
+            ");
+            return $stmt->execute([$username, $email, $phone, $avatar, $id]);
+        } else {
+            $stmt = Database::getInstance()->prepare("
+                UPDATE users SET username=?, email=?, phone=? WHERE id=?
+            ");
+            return $stmt->execute([$username, $email, $phone, $id]);
+        }
+    }
+
 }

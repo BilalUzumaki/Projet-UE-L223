@@ -26,7 +26,7 @@
                 <a href="<?= SITE_URL ?>/index.php?page=add_recipe">Add Recipe</a>
 
                 <?php if (isset($_SESSION['user'])): ?>
-                    <a href="<?= SITE_URL ?>/index.php?page=logout">Log out</a>
+                    <a href="<?= SITE_URL ?>/index.php?page=profile">Profile</a>
                 <?php else: ?>
                     <a href="<?= SITE_URL ?>/index.php?page=login">Login</a>
                     <a href="<?= SITE_URL ?>/index.php?page=register" class="btn-nav">Sign Up</a>

@@ -93,4 +93,121 @@ class Recipe {
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    // Recettes favorites de l’utilisateur
+    public static function favorites($user_id) {
+        $stmt = Database::getInstance()->prepare("
+            SELECT r.*, u.username
+            FROM recipe_favorites f
+            JOIN recipes r ON f.recipe_id = r.id
+            JOIN users u ON r.user_id = u.id
+            WHERE f.user_id = ?
+            ORDER BY f.created_at DESC
+        ");
+        $stmt->execute([$user_id]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    // Recettes postées par l’utilisateur
+    public static function byUser($user_id) {
+        $stmt = Database::getInstance()->prepare("
+            SELECT r.*, u.username
+            FROM recipes r
+            JOIN users u ON r.user_id = u.id
+            WHERE r.user_id = ?
+            ORDER BY r.created_at DESC
+        ");
+        $stmt->execute([$user_id]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    // Historique des 20 dernières vues
+    public static function history($user_id, $limit = 20) {
+        $limit = (int)$limit;
+
+        $stmt = Database::getInstance()->prepare("
+            SELECT r.*, u.username, MAX(v.viewed_at) AS last_viewed
+            FROM recipe_views v
+            JOIN recipes r ON v.recipe_id = r.id
+            JOIN users u ON r.user_id = u.id
+            WHERE v.user_id = ?
+            GROUP BY r.id
+            ORDER BY last_viewed DESC
+            LIMIT $limit
+        ");
+
+        $stmt->execute([$user_id]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public static function update($id, $data) {
+        $categories = is_array($data['category']) ? $data['category'] : [$data['category']];
+
+        $stmt = Database::getInstance()->prepare("
+            UPDATE recipes SET
+                title = ?,
+                description = ?,
+                category = ?,
+                difficulty = ?,
+                ingredients = ?,
+                instructions = ?,
+                prep_time = ?,
+                cook_time = ?,
+                servings = ?
+            WHERE id = ?
+        ");
+
+        return $stmt->execute([
+            $data['title'],
+            $data['description'],
+            implode(',', $categories),
+            $data['difficulty'],
+            $data['ingredients'],
+            $data['instructions'],
+            $data['prep_time'] ?? null,
+            $data['cook_time'] ?? null,
+            $data['servings'] ?? null,
+            $id
+        ]);
+    }
+
+    public static function delete($id) {
+        $stmt = Database::getInstance()->prepare("DELETE FROM recipes WHERE id = ?");
+        return $stmt->execute([$id]);
+    }
+
+    public static function addFavorite($user_id, $recipe_id) {
+        $stmt = Database::getInstance()->prepare("
+            INSERT IGNORE INTO recipe_favorites (user_id, recipe_id) VALUES (?, ?)
+        ");
+        return $stmt->execute([$user_id, $recipe_id]);
+    }
+
+    public static function removeFavorite($user_id, $recipe_id) {
+        $stmt = Database::getInstance()->prepare("
+            DELETE FROM recipe_favorites WHERE user_id = ? AND recipe_id = ?
+        ");
+        return $stmt->execute([$user_id, $recipe_id]);
+    }
+
+    public static function countFavorites($recipe_id) {
+        $stmt = Database::getInstance()->prepare("
+            SELECT COUNT(*) as total FROM recipe_favorites WHERE recipe_id = ?
+        ");
+        $stmt->execute([$recipe_id]);
+        return (int)$stmt->fetchColumn();
+    }
+
+    public static function favoritesByUser($user_id) {
+        $stmt = Database::getInstance()->prepare("
+            SELECT r.*, u.username
+            FROM recipe_favorites f
+            JOIN recipes r ON f.recipe_id = r.id
+            JOIN users u ON r.user_id = u.id
+            WHERE f.user_id = ?
+            ORDER BY f.created_at DESC
+        ");
+        $stmt->execute([$user_id]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

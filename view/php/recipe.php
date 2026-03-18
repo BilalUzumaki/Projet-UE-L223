@@ -1,128 +1,111 @@
 <?php
 $pageTitle = "Recipe — Cook n' Share";
 require_once 'header.php';
+
+$totalFavs = Recipe::countFavorites($recipe['id'] ?? 0);
+
+$userFavored = false;
+if(isset($_SESSION['user'])) {
+    $stmt = Database::getInstance()->prepare("
+        SELECT 1 FROM recipe_favorites WHERE user_id=? AND recipe_id=?
+    ");
+    $stmt->execute([$_SESSION['user']['id'], $recipe['id'] ?? 0]);
+    $userFavored = (bool)$stmt->fetchColumn();
+}
+
+$isOwner = isset($_SESSION['user']) && $_SESSION['user']['id'] === $recipe['user_id'];
 ?>
 
-<div class="recipe-page">
+<div class="container">
 
-    <!-- Main content -->
-    <div class="recipe-main">
+    <div class="recipe-card">
 
-        <div class="recipe-header">
-            <div class="category-tag"><?= $icon ?> <?= htmlspecialchars($recipe['category']) ?></div>
-            <h1><?= htmlspecialchars($recipe['title']) ?></h1>
-
-            <?php if ($recipe['description']): ?>
-                <p class="recipe-desc"><?= htmlspecialchars($recipe['description']) ?></p>
-            <?php endif; ?>
-
-            <div class="recipe-meta-row">
-                <?php if ($totalTime > 0): ?>
-                    <span class="meta-item"><span>⏱</span> <?= $totalTime ?> min total</span>
-                <?php endif; ?>
-                <?php if ($recipe['prep_time']): ?>
-                    <span class="meta-item"><span>🔪</span> <?= $recipe['prep_time'] ?> min prep</span>
-                <?php endif; ?>
-                <?php if ($recipe['cook_time']): ?>
-                    <span class="meta-item"><span>🔥</span> <?= $recipe['cook_time'] ?> min cook</span>
-                <?php endif; ?>
-                <?php if ($recipe['servings']): ?>
-                    <span class="meta-item"><span>🍽️</span> <?= $recipe['servings'] ?> servings</span>
-                <?php endif; ?>
-                <span class="meta-item difficulty-<?= $recipe['difficulty'] ?>"><?= ucfirst($recipe['difficulty']) ?></span>
+        <!-- HEADER -->
+        <div class="card-header">
+            <div class="card-avatar"></div>
+            <div>
+                <div class="card-user"><?= htmlspecialchars($recipe['username']) ?></div>
+                <div style="font-size:12px;color:gray;">
+                    <?= $icon ?> <?= htmlspecialchars($recipe['category']) ?>
+                </div>
             </div>
         </div>
 
-        <!-- Ingredients -->
-        <div class="recipe-section">
-            <h3>Ingredients</h3>
-            <?php if ($ingredients): ?>
-                <ul class="ingredient-list">
-                    <?php foreach ($ingredients as $item): ?>
-                        <li><?= htmlspecialchars($item) ?></li>
-                    <?php endforeach; ?>
-                </ul>
-            <?php else: ?>
-                <p style="color:var(--text-muted)">No ingredients listed.</p>
+        <!-- TITLE -->
+        <div class="card-title" style="margin-top:10px;">
+            <?= htmlspecialchars($recipe['title']) ?>
+        </div>
+
+        <!-- DESCRIPTION -->
+        <?php if ($recipe['description']): ?>
+            <div class="card-desc">
+                <?= htmlspecialchars($recipe['description']) ?>
+            </div>
+        <?php endif; ?>
+
+        <!-- META -->
+        <div class="card-meta">
+            <span>⏱ <?= $totalTime ?> min</span>
+            <span><?= ucfirst($recipe['difficulty']) ?></span>
+            <?php if ($recipe['servings']): ?>
+                <span>🍽 <?= $recipe['servings'] ?></span>
             <?php endif; ?>
         </div>
 
-        <!-- Instructions -->
-        <div class="recipe-section">
-            <h3>Instructions</h3>
-            <?php if ($instructions): ?>
-                <ol class="instruction-list">
-                    <?php foreach ($instructions as $step): ?>
-                        <li><?= htmlspecialchars($step) ?></li>
-                    <?php endforeach; ?>
-                </ol>
-            <?php else: ?>
-                <p style="color:var(--text-muted)">No instructions listed.</p>
-            <?php endif; ?>
+        <!-- ❤️ FAVORITES -->
+        <div class="card-actions">
+            <a href="<?= SITE_URL ?>/index.php?page=toggle_favorite&id=<?= $recipe['id'] ?>"
+               style="color:<?= $userFavored ? 'red' : '#555' ?>; text-decoration:none;">
+                ❤️ <?= $totalFavs ?>
+            </a>
         </div>
 
-        <div style="margin-top:36px; padding-top:24px; border-top:1px solid var(--border);">
-            <a href="<?= SITE_URL ?>/index.php?page=recipes" class="btn btn-ghost">← Back to recipes</a>
-        </div>
+        <!-- EDIT / DELETE -->
+        <?php if($isOwner): ?>
+            <div class="card-actions">
+                <a href="index.php?page=edit_recipe&id=<?= $recipe['id'] ?>">✏️ Edit</a>
+                <a href="index.php?page=delete_recipe&id=<?= $recipe['id'] ?>" onclick="return confirm('Delete?')">🗑 Delete</a>
+            </div>
+        <?php endif; ?>
 
     </div>
 
-    <!-- Sidebar -->
-    <aside class="recipe-sidebar">
+    <!-- INGREDIENTS -->
+    <div class="recipe-card">
+        <h3>Ingredients</h3>
 
-        <div class="sidebar-section">
-            <h4>At a glance</h4>
-            <ul class="stat-list">
-                <li>
-                    <span class="stat-label">Category</span>
-                    <span class="stat-value"><?= htmlspecialchars($recipe['category'] ?: '—') ?></span>
-                </li>
-                <li>
-                    <span class="stat-label">Difficulty</span>
-                    <span class="stat-value difficulty-<?= $recipe['difficulty'] ?>"><?= ucfirst($recipe['difficulty']) ?></span>
-                </li>
-                <?php if ($recipe['servings']): ?>
-                <li>
-                    <span class="stat-label">Servings</span>
-                    <span class="stat-value"><?= $recipe['servings'] ?></span>
-                </li>
-                <?php endif; ?>
-                <?php if ($recipe['prep_time']): ?>
-                <li>
-                    <span class="stat-label">Prep time</span>
-                    <span class="stat-value"><?= $recipe['prep_time'] ?> min</span>
-                </li>
-                <?php endif; ?>
-                <?php if ($recipe['cook_time']): ?>
-                <li>
-                    <span class="stat-label">Cook time</span>
-                    <span class="stat-value"><?= $recipe['cook_time'] ?> min</span>
-                </li>
-                <?php endif; ?>
-                <?php if ($totalTime > 0): ?>
-                <li>
-                    <span class="stat-label">Total time</span>
-                    <span class="stat-value"><?= $totalTime ?> min</span>
-                </li>
-                <?php endif; ?>
+        <?php if ($ingredients): ?>
+            <ul class="ingredient-list">
+                <?php foreach ($ingredients as $item): ?>
+                    <li><?= htmlspecialchars($item) ?></li>
+                <?php endforeach; ?>
             </ul>
-        </div>
+        <?php else: ?>
+            <p style="color:gray;">No ingredients</p>
+        <?php endif; ?>
+    </div>
 
-        <div class="sidebar-section">
-            <h4>Shared by</h4>
-            <p style="font-weight:600;color:var(--text-head)">👤 <?= htmlspecialchars($recipe['username']) ?></p>
-            <?php if ($recipe['created_at']): ?>
-                <p style="font-size:.8rem;color:var(--text-muted);margin-top:6px;">
-                    <?= date('F j, Y', strtotime($recipe['created_at'])) ?>
-                </p>
-            <?php endif; ?>
-        </div>
+    <!-- INSTRUCTIONS -->
+    <div class="recipe-card">
+        <h3>Instructions</h3>
 
-        <div class="sidebar-section">
-            <a href="<?= SITE_URL ?>/index.php?page=recipes" style="color:var(--text-muted);font-size:.87rem;">← Browse more recipes</a>
-        </div>
+        <?php if ($instructions): ?>
+            <ol class="instruction-list">
+                <?php foreach ($instructions as $step): ?>
+                    <li><?= htmlspecialchars($step) ?></li>
+                <?php endforeach; ?>
+            </ol>
+        <?php else: ?>
+            <p style="color:gray;">No instructions</p>
+        <?php endif; ?>
+    </div>
 
-    </aside>
+    <!-- BACK -->
+    <div style="margin-top:20px;">
+        <a href="<?= SITE_URL ?>/index.php?page=recipes" class="btn">
+            ← Back
+        </a>
+    </div>
 
 </div>
 
