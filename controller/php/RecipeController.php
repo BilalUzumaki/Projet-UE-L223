@@ -47,7 +47,7 @@ class RecipeController {
             exit;
         }
 
-        // Enregistrer la vue dans l'historique si l'utilisateur est connecté
+        // Historique
         if (isset($_SESSION['user'])) {
             $stmt = Database::getInstance()->prepare("
                 INSERT INTO recipe_views (user_id, recipe_id) VALUES (?, ?)
@@ -55,7 +55,11 @@ class RecipeController {
             $stmt->execute([$_SESSION['user']['id'], $id]);
         }
 
-        // Préparer les variables pour la vue
+        // 🔥 AJOUT : charger les commentaires
+        require_once(__DIR__ . "/../../model/php/CommentModel.php");
+        $comments = Comment::byRecipe($id);
+
+        // UI data
         $categoryIcons = [
             'Pasta' => '🍝', 'Vegetarian' => '🥗', 'Dessert' => '🍰',
             'Soup'  => '🍲', 'Seafood' => '🦞', 'Meat' => '🥩',
@@ -109,9 +113,30 @@ class RecipeController {
                 }
             }
 
+            $imagePath = null;
+
+            $allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+
+            if (!empty($_FILES['image']['name'])) {
+
+                if (in_array($_FILES['image']['type'], $allowedTypes)) {
+
+                    $uploadDir = 'uploads/recipes/';
+                    if (!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
+
+                    $filename = uniqid() . '_' . basename($_FILES['image']['name']);
+                    $target = $uploadDir . $filename;
+
+                    move_uploaded_file($_FILES['image']['tmp_name'], $target);
+
+                    $imagePath = $target;
+                }
+            }
+
             if (!$error) {
                 // Crée la recette via le modèle
                 Recipe::create([
+                    'image' => $imagePath,
                     'title' => $title,
                     'description' => $description,
                     'category' => $categories,
@@ -171,8 +196,33 @@ class RecipeController {
                 $error = "Please fill in the required fields.";
             }
 
+            $imagePath = $recipe['image']; // garder l'ancienne image par défaut
+
+            if (!empty($_FILES['image']['name'])) {
+
+                $allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+
+                if (in_array($_FILES['image']['type'], $allowedTypes)) {
+
+                    $uploadDir = 'uploads/recipes/';
+                    if (!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
+
+                    $filename = uniqid() . '_' . basename($_FILES['image']['name']);
+                    $target = $uploadDir . $filename;
+
+                    move_uploaded_file($_FILES['image']['tmp_name'], $target);
+
+                    $imagePath = $target;
+                }
+            }
+
+            if (!empty($_POST['delete_image'])) {
+                $imagePath = null;
+            }
+
             if (!$error) {
                 Recipe::update($id, [
+                    'image' => $imagePath,
                     'title' => $title,
                     'description' => $description,
                     'category' => $categories,

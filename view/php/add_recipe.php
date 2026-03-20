@@ -13,9 +13,16 @@ require_once 'header.php';
         <div class="alert alert-error"><?= htmlspecialchars($error) ?></div>
     <?php endif; ?>
 
-    <form method="POST" action="<?= SITE_URL ?>/index.php?page=add_recipe">
-
+    <form method="POST" action="<?= SITE_URL ?>/index.php?page=add_recipe" enctype="multipart/form-data">
+        
         <!-- Basic info -->
+        <div class="form-section">
+            <div class="form-section-title">📸 Recipe Image</div>
+
+            <label for="image">Upload a photo</label>
+            <input type="file" id="image" name="image" accept="image/*">
+        </div>
+        
         <div class="form-section">
             <div class="form-section-title">📋 Basic Information</div>
 

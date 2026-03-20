@@ -2,6 +2,9 @@
    CooknShare — Social App UI (Mobile + Desktop)
    ============================================================ */
 
+/* =========================
+   IMPORT & VARIABLES
+   ========================= */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
 
 :root {
@@ -13,7 +16,9 @@
     --border: #E5E5EA;
 }
 
-/* RESET */
+/* =========================
+   RESET
+   ========================= */
 * {
     margin: 0;
     padding: 0;
@@ -26,33 +31,42 @@ body {
     color: var(--text);
 }
 
-/* ========================================================= */
-/* 📱 MOBILE FIRST */
-/* ========================================================= */
-
+/* =========================
+   GLOBAL
+   ========================= */
 .container {
     padding: 16px;
 }
 
-/* NAVBAR (cachée mobile) */
-.navbar {
-    display: none;
-}
-
-/* TITRES */
 h1 { font-size: 22px; font-weight: 600; }
 h2 { font-size: 20px; font-weight: 600; }
 
-/* INPUT */
-input, textarea {
-    width: 100%;
-    padding: 14px;
-    border-radius: 12px;
-    border: 1px solid var(--border);
-    margin-top: 6px;
+label {
+    display: block;
+    margin-top: 10px;
+    font-size: 13px;
 }
 
-/* BUTTON */
+/* =========================
+   INPUTS
+   ========================= */
+input,
+textarea {
+    width: 100%;
+    padding: 14px;
+    margin-top: 6px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+}
+
+input[type="search"] {
+    background: #EFEFF4;
+    border: none;
+}
+
+/* =========================
+   BUTTONS
+   ========================= */
 .btn {
     width: 100%;
     padding: 14px;
@@ -66,13 +80,22 @@ input, textarea {
     color: white;
 }
 
-/* SEARCH */
-input[type="search"] {
-    background: #EFEFF4;
-    border: none;
+.btn-danger {
+    background: white;
+    border: 1px solid #FF3B30;
+    color: #FF3B30;
 }
 
-/* FILTER */
+/* =========================
+   NAVBAR
+   ========================= */
+.navbar {
+    display: none;
+}
+
+/* =========================
+   FILTER BAR
+   ========================= */
 .filter-bar {
     display: flex;
     gap: 8px;
@@ -87,13 +110,15 @@ input[type="search"] {
     font-size: 12px;
 }
 
-/* CARD SOCIAL STYLE */
+/* =========================
+   RECIPE CARD
+   ========================= */
 .recipe-card {
     background: var(--card);
     border-radius: 20px;
     padding: 14px;
     margin-bottom: 16px;
-    box-shadow: 0 6px 20px rgba(0,0,0,.05);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
     transition: 0.2s;
 }
 
@@ -101,7 +126,11 @@ input[type="search"] {
     transform: translateY(-2px);
 }
 
-/* HEADER CARD */
+.recipe-card h3 {
+    margin-bottom: 10px;
+}
+
+/* HEADER */
 .card-header {
     display: flex;
     align-items: center;
@@ -148,7 +177,7 @@ input[type="search"] {
     color: var(--muted);
 }
 
-/* ACTIONS (like/share style) */
+/* ACTIONS */
 .card-actions {
     display: flex;
     justify-content: space-around;
@@ -156,10 +185,19 @@ input[type="search"] {
     font-size: 14px;
 }
 
-/* PROFILE */
+/* =========================
+   PROFILE
+   ========================= */
 .profile-header {
     text-align: center;
     margin-bottom: 20px;
+}
+
+.profile-header-card {
+    text-align: center;
+    background: white;
+    padding: 20px;
+    border-radius: 20px;
 }
 
 .profile-avatar {
@@ -170,14 +208,63 @@ input[type="search"] {
     margin: auto;
 }
 
-.profile-item {
-    background: white;
-    padding: 14px;
-    border-radius: 14px;
-    margin-bottom: 10px;
+.avatar-img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
 }
 
-/* BOTTOM NAV (mobile) */
+/* PROFILE MENU */
+.profile-menu {
+    display: flex;
+    justify-content: space-between;
+    margin: 20px 0;
+}
+
+.profile-menu-vertical {
+    margin-top: 20px;
+}
+
+.profile-item {
+    display: block;
+    background: white;
+    padding: 15px;
+    border-radius: 14px;
+    margin-bottom: 10px;
+    text-decoration: none;
+    color: black;
+}
+
+/* ACTIONS */
+.profile-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 30px;
+}
+
+.profile-actions .btn {
+    flex: 1;
+}
+
+/* FORM */
+.form-card {
+    background: white;
+    padding: 20px;
+    border-radius: 20px;
+}
+
+/* =========================
+   LISTS
+   ========================= */
+.ingredient-list li,
+.instruction-list li {
+    margin-bottom: 8px;
+}
+
+/* =========================
+   BOTTOM NAV (MOBILE)
+   ========================= */
 .bottom-nav {
     position: fixed;
     bottom: 0;
@@ -204,10 +291,9 @@ input[type="search"] {
     color: var(--primary);
 }
 
-/* ========================================================= */
-/* 📲 TABLET */
-/* ========================================================= */
-
+/* =========================================================
+   TABLET
+   ========================================================= */
 @media (min-width: 768px) {
 
     .container {
@@ -225,7 +311,6 @@ input[type="search"] {
         display: none;
     }
 
-    /* NAVBAR ACTIVE */
     .navbar {
         display: flex;
         justify-content: space-between;
@@ -246,10 +331,9 @@ input[type="search"] {
     }
 }
 
-/* ========================================================= */
-/* 💻 DESKTOP */
-/* ========================================================= */
-
+/* =========================================================
+   DESKTOP
+   ========================================================= */
 @media (min-width: 1024px) {
 
     .container {
@@ -271,80 +355,4 @@ input[type="search"] {
     .nav-links a:hover {
         color: var(--primary);
     }
-}
-
-.avatar-img {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    object-fit: cover;
-}
-
-.profile-header-card {
-    text-align: center;
-    background: white;
-    padding: 20px;
-    border-radius: 20px;
-}
-
-.profile-menu {
-    display: flex;
-    justify-content: space-between;
-    margin: 20px 0;
-}
-
-.form-card {
-    background: white;
-    padding: 20px;
-    border-radius: 20px;
-}
-
-label {
-    font-size: 13px;
-    margin-top: 10px;
-    display:block;
-}
-
-.profile-actions {
-    display: flex;
-    gap: 10px;
-    margin-top: 30px;
-}
-
-.profile-actions .btn {
-    flex: 1;
-}
-
-.btn-danger {
-    background: #FF3B30;
-    color: white;
-}
-
-.btn-danger {
-    background: white;
-    border: 1px solid #FF3B30;
-    color: #FF3B30;
-}
-
-.profile-menu-vertical {
-    margin-top: 20px;
-}
-
-.profile-item {
-    display: block;
-    background: white;
-    padding: 15px;
-    border-radius: 14px;
-    margin-bottom: 10px;
-    text-decoration: none;
-    color: black;
-}
-
-.ingredient-list li,
-.instruction-list li {
-    margin-bottom: 8px;
-}
-
-.recipe-card h3 {
-    margin-bottom: 10px;
 }

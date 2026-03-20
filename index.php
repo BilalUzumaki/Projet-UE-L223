@@ -9,6 +9,8 @@ require 'model/php/UserModel.php';
 require 'model/php/RecipeModel.php';
 require 'controller/php/UserController.php';
 require 'controller/php/RecipeController.php';
+require 'model/php/CommentModel.php';
+require 'controller/php/CommentController.php';
 
 $page = $_GET['page'] ?? 'home';
 
@@ -60,6 +62,10 @@ switch($page) {
     case 'toggle_favorite':
         $controller = new RecipeController();
         $controller->toggleFavorite();
+        break;
+    case 'add_comment':
+        $controller = new CommentController();
+        $controller->add();
         break;
     default:
         require_once 'model/php/RecipeModel.php';

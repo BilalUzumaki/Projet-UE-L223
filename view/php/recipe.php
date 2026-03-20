@@ -31,6 +31,12 @@ $isOwner = isset($_SESSION['user']) && $_SESSION['user']['id'] === $recipe['user
             </div>
         </div>
 
+        <?php if (!empty($recipe['image'])): ?>
+            <div style="margin:10px 0;">
+                <img src="<?= SITE_URL . $recipe['image'] ?>" style="width:100%;border-radius:12px;">
+            </div>
+        <?php endif; ?>
+        
         <!-- TITLE -->
         <div class="card-title" style="margin-top:10px;">
             <?= htmlspecialchars($recipe['title']) ?>
@@ -100,6 +106,85 @@ $isOwner = isset($_SESSION['user']) && $_SESSION['user']['id'] === $recipe['user
         <?php endif; ?>
     </div>
 
+    <!-- 💬 COMMENTS -->
+    <div class="recipe-card">
+        <h3>💬 Comments</h3>
+
+        <!-- COMMENT FORM -->
+        <?php if(isset($_SESSION['user'])): ?>
+            <form method="POST" action="index.php?page=add_comment">
+                <input type="hidden" name="recipe_id" value="<?= $recipe['id'] ?>">
+
+                <textarea name="content" placeholder="Write a comment..." required></textarea>
+
+                <button type="submit" class="btn btn-primary" style="margin-top:10px;">
+                    Post Comment
+                </button>
+            </form>
+        <?php else: ?>
+            <p style="color:gray;">
+                You must <a href="index.php?page=login">login</a> to comment.
+            </p>
+        <?php endif; ?>
+
+        <hr style="margin:20px 0;">
+
+        <!-- 🔁 FUNCTION -->
+        <?php
+        function displayComments($comments, $level = 0) {
+            foreach ($comments as $c): ?>
+                
+                <div style="margin-left: <?= $level * 20 ?>px; margin-bottom:15px;">
+
+                    <strong><?= htmlspecialchars($c['username']) ?></strong>
+                    <div style="font-size:12px;color:gray;">
+                        <?= $c['created_at'] ?>
+                    </div>
+
+                    <p><?= htmlspecialchars($c['content']) ?></p>
+
+                    <!-- BOUTON REPLY -->
+                    <?php if(isset($_SESSION['user'])): ?>
+                        <button type="button"
+                                onclick="toggleReplyForm(<?= $c['id'] ?>)"
+                                style="font-size:12px;color:gray;background:none;border:none;cursor:pointer;">
+                            ↩️ Reply
+                        </button>
+
+                        <!-- FORMULAIRE CACHE -->
+                        <form method="POST"
+                              action="index.php?page=add_comment"
+                              id="reply-form-<?= $c['id'] ?>"
+                              style="margin-top:5px; display:none;">
+
+                            <input type="hidden" name="recipe_id" value="<?= $c['recipe_id'] ?>">
+                            <input type="hidden" name="parent_id" value="<?= $c['id'] ?>">
+
+                            <input type="text" name="content" placeholder="Reply..." required>
+                            <button type="submit">Send</button>
+                        </form>
+                    <?php endif; ?>
+
+                    <!-- REPLIES -->
+                    <?php if (!empty($c['replies'])): ?>
+                        <?php displayComments($c['replies'], $level + 1); ?>
+                    <?php endif; ?>
+
+                </div>
+
+            <?php endforeach;
+        }
+        ?>
+
+        <!-- DISPLAY -->
+        <?php if(!empty($comments)): ?>
+            <?php displayComments($comments); ?>
+        <?php else: ?>
+            <p style="color:gray;">No comments yet.</p>
+        <?php endif; ?>
+
+    </div>
+
     <!-- BACK -->
     <div style="margin-top:20px;">
         <a href="<?= SITE_URL ?>/index.php?page=recipes" class="btn">
@@ -108,5 +193,22 @@ $isOwner = isset($_SESSION['user']) && $_SESSION['user']['id'] === $recipe['user
     </div>
 
 </div>
+
+<!-- 🔥 SCRIPT -->
+<script>
+function toggleReplyForm(id) {
+
+    // fermer tous les autres
+    document.querySelectorAll("[id^='reply-form-']").forEach(f => {
+        if (f.id !== "reply-form-" + id) {
+            f.style.display = "none";
+        }
+    });
+
+    const form = document.getElementById("reply-form-" + id);
+
+    form.style.display = (form.style.display === "none") ? "block" : "none";
+}
+</script>
 
 <?php require_once 'footer.php'; ?>

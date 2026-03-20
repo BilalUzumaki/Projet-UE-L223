@@ -7,7 +7,7 @@ class Recipe {
     public static function create($data, $user_id) {
         $stmt = Database::getInstance()->prepare(
             "INSERT INTO recipes 
-            (title, description, category, difficulty, ingredients, instructions, prep_time, cook_time, servings, user_id)
+            (title, description, category, difficulty, ingredients, instructions, prep_time, cook_time, servings, image, user_id)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
         );
 
@@ -24,6 +24,7 @@ class Recipe {
             $data['prep_time'] ?? null,
             $data['cook_time'] ?? null,
             $data['servings'] ?? null,
+            $data['image'] ?? null,
             $user_id
         ]);
     }
@@ -153,7 +154,8 @@ class Recipe {
                 instructions = ?,
                 prep_time = ?,
                 cook_time = ?,
-                servings = ?
+                servings = ?,
+                image = ?
             WHERE id = ?
         ");
 
@@ -167,6 +169,7 @@ class Recipe {
             $data['prep_time'] ?? null,
             $data['cook_time'] ?? null,
             $data['servings'] ?? null,
+            $data['image'] ?? null,
             $id
         ]);
     }

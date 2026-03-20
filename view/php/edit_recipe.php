@@ -11,7 +11,22 @@ require_once 'header.php';
         <p style="color:red;"><?= $error ?></p>
     <?php endif; ?>
 
-    <form method="POST">
+    <form method="POST" enctype="multipart/form-data">
+
+        <label>Recipe Image</label>
+
+        <?php if (!empty($recipe['image'])): ?>
+            <div style="margin-bottom:10px;">
+                <img src="<?= SITE_URL . $recipe['image'] ?>" style="width:150px;border-radius:10px;">
+            </div>
+        <?php endif; ?>
+
+        <input type="file" name="image" accept="image/*">
+
+        <label>
+            <input type="checkbox" name="delete_image"> Remove current image
+        </label>
+        
         <label>Title</label>
         <input type="text" name="title" value="<?= htmlspecialchars($recipe['title']) ?>" required>
 

@@ -28,6 +28,23 @@ CREATE TABLE recipes (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
+ALTER TABLE recipes ADD image VARCHAR(255) NULL;
+
+CREATE TABLE comments (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    recipe_id INT NOT NULL,
+    content TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (recipe_id) REFERENCES recipes(id) ON DELETE CASCADE
+);
+
+ALTER TABLE comments 
+ADD parent_id INT NULL,
+ADD FOREIGN KEY (parent_id) REFERENCES comments(id) ON DELETE CASCADE;
+
 -- Table pour les favoris
 CREATE TABLE recipe_favorites (
     id INT AUTO_INCREMENT PRIMARY KEY,
