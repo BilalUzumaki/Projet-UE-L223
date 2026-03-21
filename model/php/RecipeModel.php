@@ -8,7 +8,7 @@ class Recipe {
         $stmt = Database::getInstance()->prepare(
             "INSERT INTO recipes 
             (title, description, category, difficulty, ingredients, instructions, prep_time, cook_time, servings, image, user_id)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
         );
 
         // s'assurer que category est un tableau
@@ -31,23 +31,30 @@ class Recipe {
 
     // Retourne toutes les recettes avec filtres optionnels
     public static function all($filters = []) {
-        $sql = "SELECT r.*, u.username FROM recipes r JOIN users u ON r.user_id = u.id WHERE 1";
+        $sql = "
+            SELECT r.*, u.username, COUNT(f.id) as likes
+            FROM recipes r
+            JOIN users u ON r.user_id = u.id
+            LEFT JOIN recipe_favorites f ON r.id = f.recipe_id
+            WHERE 1
+        ";
+
         $params = [];
 
-        // Filtre par catégorie
+        // Filtre catégorie
         if (!empty($filters['category'])) {
-            $sql .= " AND FIND_IN_SET(?, category)";
+            $sql .= " AND FIND_IN_SET(?, r.category)";
             $params[] = $filters['category'];
         }
 
-        // Filtre par recherche dans le titre ou la description
+        // Filtre recherche
         if (!empty($filters['search'])) {
-            $sql .= " AND (title LIKE ? OR description LIKE ?)";
+            $sql .= " AND (r.title LIKE ? OR r.description LIKE ?)";
             $params[] = "%" . $filters['search'] . "%";
             $params[] = "%" . $filters['search'] . "%";
         }
 
-        $sql .= " ORDER BY r.created_at DESC";
+        $sql .= " GROUP BY r.id ORDER BY r.created_at DESC";
 
         $stmt = Database::getInstance()->prepare($sql);
         $stmt->execute($params);
@@ -79,15 +86,14 @@ class Recipe {
     }
 
     public static function latest($limit = 5) {
-        $db = Database::getInstance();
-
-        // On s'assure que $limit est bien un entier pour éviter toute injection
         $limit = (int)$limit;
 
-        $stmt = $db->prepare("
-            SELECT r.*, u.username
+        $stmt = Database::getInstance()->prepare("
+            SELECT r.*, u.username, COUNT(f.id) as likes
             FROM recipes r
             JOIN users u ON r.user_id = u.id
+            LEFT JOIN recipe_favorites f ON r.id = f.recipe_id
+            GROUP BY r.id
             ORDER BY r.created_at DESC
             LIMIT $limit
         ");
@@ -98,11 +104,13 @@ class Recipe {
     // Recettes favorites de l’utilisateur
     public static function favorites($user_id) {
         $stmt = Database::getInstance()->prepare("
-            SELECT r.*, u.username
+            SELECT r.*, u.username, COUNT(f2.id) as likes
             FROM recipe_favorites f
             JOIN recipes r ON f.recipe_id = r.id
             JOIN users u ON r.user_id = u.id
+            LEFT JOIN recipe_favorites f2 ON r.id = f2.recipe_id
             WHERE f.user_id = ?
+            GROUP BY r.id
             ORDER BY f.created_at DESC
         ");
         $stmt->execute([$user_id]);
@@ -112,10 +120,12 @@ class Recipe {
     // Recettes postées par l’utilisateur
     public static function byUser($user_id) {
         $stmt = Database::getInstance()->prepare("
-            SELECT r.*, u.username
+            SELECT r.*, u.username, COUNT(f.id) as likes
             FROM recipes r
             JOIN users u ON r.user_id = u.id
+            LEFT JOIN recipe_favorites f ON r.id = f.recipe_id
             WHERE r.user_id = ?
+            GROUP BY r.id
             ORDER BY r.created_at DESC
         ");
         $stmt->execute([$user_id]);
@@ -211,6 +221,23 @@ class Recipe {
             ORDER BY f.created_at DESC
         ");
         $stmt->execute([$user_id]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public static function popular($limit = 3) {
+        $limit = (int)$limit;
+
+        $stmt = Database::getInstance()->prepare("
+            SELECT r.*, u.username, COUNT(f.id) as likes
+            FROM recipes r
+            JOIN users u ON r.user_id = u.id
+            LEFT JOIN recipe_favorites f ON r.id = f.recipe_id
+            GROUP BY r.id
+            ORDER BY likes DESC
+            LIMIT $limit
+        ");
+
+        $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }

@@ -18,70 +18,48 @@ $isOwner = isset($_SESSION['user']) && $_SESSION['user']['id'] === $recipe['user
 
 <div class="container">
 
-    <div class="recipe-card">
-
-        <!-- HEADER -->
-        <div class="card-header">
-            <div class="card-avatar"></div>
-            <div>
-                <div class="card-user"><?= htmlspecialchars($recipe['username']) ?></div>
-                <div style="font-size:12px;color:gray;">
-                    <?= $icon ?> <?= htmlspecialchars($recipe['category']) ?>
-                </div>
-            </div>
+    <!-- IMAGE -->
+    <?php if (!empty($recipe['image'])): ?>
+        <div style="margin-bottom:15px;">
+            <img src="<?= SITE_URL . '/' . $recipe['image'] ?>" style="width:100%;border-radius:12px;">
         </div>
+    <?php endif; ?>
 
-        <?php if (!empty($recipe['image'])): ?>
-            <div style="margin:10px 0;">
-                <img src="<?= SITE_URL . $recipe['image'] ?>" style="width:100%;border-radius:12px;">
-            </div>
-        <?php endif; ?>
-        
-        <!-- TITLE -->
-        <div class="card-title" style="margin-top:10px;">
-            <?= htmlspecialchars($recipe['title']) ?>
-        </div>
-
-        <!-- DESCRIPTION -->
-        <?php if ($recipe['description']): ?>
-            <div class="card-desc">
-                <?= htmlspecialchars($recipe['description']) ?>
-            </div>
-        <?php endif; ?>
-
-        <!-- META -->
-        <div class="card-meta">
-            <span>⏱ <?= $totalTime ?> min</span>
-            <span><?= ucfirst($recipe['difficulty']) ?></span>
-            <?php if ($recipe['servings']): ?>
-                <span>🍽 <?= $recipe['servings'] ?></span>
-            <?php endif; ?>
-        </div>
-
-        <!-- ❤️ FAVORITES -->
-        <div class="card-actions">
+    <!-- USER & LIKES -->
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;">
+        <div style="font-weight:600; font-size:16px;"><?= htmlspecialchars($recipe['username']) ?></div>
+        <?php if(isset($_SESSION['user'])): ?>
             <a href="<?= SITE_URL ?>/index.php?page=toggle_favorite&id=<?= $recipe['id'] ?>"
-               style="color:<?= $userFavored ? 'red' : '#555' ?>; text-decoration:none;">
+            style="font-size:14px;color:<?= $userFavored ? 'red' : '#555' ?>; text-decoration:none;">
                 ❤️ <?= $totalFavs ?>
             </a>
-        </div>
-
-        <!-- EDIT / DELETE -->
-        <?php if($isOwner): ?>
-            <div class="card-actions">
-                <a href="index.php?page=edit_recipe&id=<?= $recipe['id'] ?>">✏️ Edit</a>
-                <a href="index.php?page=delete_recipe&id=<?= $recipe['id'] ?>" onclick="return confirm('Delete?')">🗑 Delete</a>
-            </div>
+        <?php else: ?>
+            <span style="font-size:14px;color:#555;">❤️ <?= $totalFavs ?></span>
         <?php endif; ?>
+    </div>
 
+    <!-- TITLE & META -->
+    <div style="font-weight:600;font-size:18px;margin-bottom:5px;"><?= htmlspecialchars($recipe['title']) ?></div>
+    <div style="font-size:13px;color:gray;margin-bottom:10px;">
+        ⏱ <?= $totalTime ?> min · <?= ucfirst($recipe['difficulty']) ?>
+        <?php if ($recipe['servings']): ?> · 🍽 <?= $recipe['servings'] ?><?php endif; ?>
+    </div>
+
+    <!-- DESCRIPTION -->
+    <?php if ($recipe['description']): ?>
+        <div style="margin-bottom:15px;"><?= htmlspecialchars($recipe['description']) ?></div>
+    <?php endif; ?>
+
+    <!-- BUTTONS: INGREDIENTS / INSTRUCTIONS -->
+    <div style="display:flex;gap:10px;margin-bottom:15px;">
+        <button type="button" onclick="showTab('ingredients')" class="tab-btn active">Ingredients</button>
+        <button type="button" onclick="showTab('instructions')" class="tab-btn">Instructions</button>
     </div>
 
     <!-- INGREDIENTS -->
-    <div class="recipe-card">
-        <h3>Ingredients</h3>
-
+    <div id="ingredients-tab">
         <?php if ($ingredients): ?>
-            <ul class="ingredient-list">
+            <ul style="margin-bottom:15px;">
                 <?php foreach ($ingredients as $item): ?>
                     <li><?= htmlspecialchars($item) ?></li>
                 <?php endforeach; ?>
@@ -92,11 +70,9 @@ $isOwner = isset($_SESSION['user']) && $_SESSION['user']['id'] === $recipe['user
     </div>
 
     <!-- INSTRUCTIONS -->
-    <div class="recipe-card">
-        <h3>Instructions</h3>
-
+    <div id="instructions-tab" style="display:none;">
         <?php if ($instructions): ?>
-            <ol class="instruction-list">
+            <ol style="margin-bottom:15px;">
                 <?php foreach ($instructions as $step): ?>
                     <li><?= htmlspecialchars($step) ?></li>
                 <?php endforeach; ?>
@@ -106,107 +82,78 @@ $isOwner = isset($_SESSION['user']) && $_SESSION['user']['id'] === $recipe['user
         <?php endif; ?>
     </div>
 
-    <!-- 💬 COMMENTS -->
-    <div class="recipe-card">
+    <!-- COMMENTS -->
+    <div style="margin-top:20px;">
         <h3>💬 Comments</h3>
 
-        <!-- COMMENT FORM -->
         <?php if(isset($_SESSION['user'])): ?>
-            <form method="POST" action="index.php?page=add_comment">
+            <form method="POST" action="index.php?page=add_comment" style="margin-bottom:15px;">
                 <input type="hidden" name="recipe_id" value="<?= $recipe['id'] ?>">
-
-                <textarea name="content" placeholder="Write a comment..." required></textarea>
-
-                <button type="submit" class="btn btn-primary" style="margin-top:10px;">
-                    Post Comment
-                </button>
+                <textarea name="content" placeholder="Write a comment..." required style="width:100%;margin-bottom:5px;"></textarea>
+                <button type="submit" class="btn btn-primary">Post Comment</button>
             </form>
         <?php else: ?>
-            <p style="color:gray;">
-                You must <a href="index.php?page=login">login</a> to comment.
-            </p>
+            <p style="color:gray;">You must <a href="index.php?page=login">login</a> to comment.</p>
         <?php endif; ?>
 
-        <hr style="margin:20px 0;">
+        <hr style="margin:15px 0;">
 
-        <!-- 🔁 FUNCTION -->
         <?php
         function displayComments($comments, $level = 0) {
-            foreach ($comments as $c): ?>
-                
-                <div style="margin-left: <?= $level * 20 ?>px; margin-bottom:15px;">
+            foreach ($comments as $c) {
+                echo '<div style="margin-left:' . ($level*20) . 'px;margin-bottom:12px;">';
+                echo '<strong>' . htmlspecialchars($c['username']) . '</strong>';
+                echo '<div style="font-size:12px;color:gray;">' . $c['created_at'] . '</div>';
+                echo '<p>' . htmlspecialchars($c['content']) . '</p>';
 
-                    <strong><?= htmlspecialchars($c['username']) ?></strong>
-                    <div style="font-size:12px;color:gray;">
-                        <?= $c['created_at'] ?>
-                    </div>
+                if (isset($_SESSION['user'])) {
+                    echo '<button type="button" onclick="toggleReplyForm(' . $c['id'] . ')" style="font-size:12px;color:gray;background:none;border:none;cursor:pointer;">↩️ Reply</button>';
+                    echo '<form method="POST" action="index.php?page=add_comment" id="reply-form-' . $c['id'] . '" style="margin-top:5px; display:none;">';
+                    echo '<input type="hidden" name="recipe_id" value="' . $c['recipe_id'] . '">';
+                    echo '<input type="hidden" name="parent_id" value="' . $c['id'] . '">';
+                    echo '<input type="text" name="content" placeholder="Reply..." required>';
+                    echo '<button type="submit">Send</button>';
+                    echo '</form>';
+                }
 
-                    <p><?= htmlspecialchars($c['content']) ?></p>
+                if (!empty($c['replies'])) {
+                    displayComments($c['replies'], $level+1);
+                }
 
-                    <!-- BOUTON REPLY -->
-                    <?php if(isset($_SESSION['user'])): ?>
-                        <button type="button"
-                                onclick="toggleReplyForm(<?= $c['id'] ?>)"
-                                style="font-size:12px;color:gray;background:none;border:none;cursor:pointer;">
-                            ↩️ Reply
-                        </button>
+                echo '</div>';
+            }
+        }
 
-                        <!-- FORMULAIRE CACHE -->
-                        <form method="POST"
-                              action="index.php?page=add_comment"
-                              id="reply-form-<?= $c['id'] ?>"
-                              style="margin-top:5px; display:none;">
-
-                            <input type="hidden" name="recipe_id" value="<?= $c['recipe_id'] ?>">
-                            <input type="hidden" name="parent_id" value="<?= $c['id'] ?>">
-
-                            <input type="text" name="content" placeholder="Reply..." required>
-                            <button type="submit">Send</button>
-                        </form>
-                    <?php endif; ?>
-
-                    <!-- REPLIES -->
-                    <?php if (!empty($c['replies'])): ?>
-                        <?php displayComments($c['replies'], $level + 1); ?>
-                    <?php endif; ?>
-
-                </div>
-
-            <?php endforeach;
+        if(!empty($comments)) {
+            displayComments($comments);
+        } else {
+            echo '<p style="color:gray;">No comments yet.</p>';
         }
         ?>
-
-        <!-- DISPLAY -->
-        <?php if(!empty($comments)): ?>
-            <?php displayComments($comments); ?>
-        <?php else: ?>
-            <p style="color:gray;">No comments yet.</p>
-        <?php endif; ?>
-
     </div>
 
-    <!-- BACK -->
+    <!-- BACK BUTTON -->
     <div style="margin-top:20px;">
-        <a href="<?= SITE_URL ?>/index.php?page=recipes" class="btn">
-            ← Back
-        </a>
+        <a href="<?= SITE_URL ?>/index.php?page=recipes" class="btn">← Back</a>
     </div>
 
 </div>
 
-<!-- 🔥 SCRIPT -->
+<!-- SCRIPTS -->
 <script>
+function showTab(tab) {
+    document.getElementById('ingredients-tab').style.display = (tab==='ingredients') ? 'block' : 'none';
+    document.getElementById('instructions-tab').style.display = (tab==='instructions') ? 'block' : 'none';
+
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelector('.tab-btn[onclick="showTab(\''+tab+'\')"]').classList.add('active');
+}
+
 function toggleReplyForm(id) {
-
-    // fermer tous les autres
     document.querySelectorAll("[id^='reply-form-']").forEach(f => {
-        if (f.id !== "reply-form-" + id) {
-            f.style.display = "none";
-        }
+        if (f.id !== "reply-form-" + id) f.style.display = "none";
     });
-
     const form = document.getElementById("reply-form-" + id);
-
     form.style.display = (form.style.display === "none") ? "block" : "none";
 }
 </script>

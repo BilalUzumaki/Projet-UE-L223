@@ -18,14 +18,12 @@ require_once 'header.php';
         <!-- Basic info -->
         <div class="form-section">
             <div class="form-section-title">📸 Recipe Image</div>
-
             <label for="image">Upload a photo</label>
             <input type="file" id="image" name="image" accept="image/*">
         </div>
         
         <div class="form-section">
             <div class="form-section-title">📋 Basic Information</div>
-
             <div class="form-group">
                 <label for="title">Recipe Title *</label>
                 <input type="text" id="title" name="title" required
@@ -61,28 +59,45 @@ require_once 'header.php';
             </div>
         </div>
 
-        <!-- Times & Servings -->
+        <!-- Prep Time & Servings -->
         <div class="form-section">
             <label for="prep_time">Prep Time (minutes)</label>
             <input type="number" id="prep_time" name="prep_time" min="0" value="<?= htmlspecialchars($_POST['prep_time'] ?? '') ?>">
-
-            <label for="cook_time">Cook Time (minutes)</label>
-            <input type="number" id="cook_time" name="cook_time" min="0" value="<?= htmlspecialchars($_POST['cook_time'] ?? '') ?>">
 
             <label for="servings">Servings</label>
             <input type="number" id="servings" name="servings" min="1" value="<?= htmlspecialchars($_POST['servings'] ?? '') ?>">
         </div>
 
-        <!-- Ingredients -->
+        <!-- Ingredients step by step -->
         <div class="form-section">
-            <label for="ingredients">Ingredients *</label>
-            <textarea id="ingredients" name="ingredients" rows="8"><?= htmlspecialchars($_POST['ingredients'] ?? '') ?></textarea>
+            <label>Ingredients *</label>
+            <div id="ingredients-container">
+                <?php
+                $oldIngredients = $_POST['ingredients'] ?? [''];
+                foreach ($oldIngredients as $ing): ?>
+                    <div class="ingredient-step">
+                        <input type="text" name="ingredients[]" value="<?= htmlspecialchars($ing) ?>" required>
+                        <button type="button" class="remove-step">✖</button>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+            <button type="button" id="add-ingredient" class="btn btn-secondary">+ Add Ingredient</button>
         </div>
 
-        <!-- Instructions -->
+        <!-- Instructions step by step -->
         <div class="form-section">
-            <label for="instructions">Instructions *</label>
-            <textarea id="instructions" name="instructions" rows="10"><?= htmlspecialchars($_POST['instructions'] ?? '') ?></textarea>
+            <label>Instructions *</label>
+            <div id="instructions-container">
+                <?php
+                $oldInstructions = $_POST['instructions'] ?? [''];
+                foreach ($oldInstructions as $inst): ?>
+                    <div class="instruction-step">
+                        <input type="text" name="instructions[]" value="<?= htmlspecialchars($inst) ?>" required>
+                        <button type="button" class="remove-step">✖</button>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+            <button type="button" id="add-instruction" class="btn btn-secondary">+ Add Step</button>
         </div>
 
         <div class="form-actions">
@@ -91,23 +106,26 @@ require_once 'header.php';
         </div>
     </form>
 </div>
+
 <?php require_once 'footer.php'; ?>
 
 <script>
-    // Désactivation des options en double
-    document.addEventListener('DOMContentLoaded', () => {
-        const selects = document.querySelectorAll('.category-select');
+document.addEventListener('DOMContentLoaded', () => {
+    function addStep(containerId) {
+        const container = document.getElementById(containerId);
+        const div = document.createElement('div');
+        div.classList.add(containerId === 'ingredients-container' ? 'ingredient-step' : 'instruction-step');
+        div.innerHTML = '<input type="text" name="' + (containerId === 'ingredients-container' ? 'ingredients[]' : 'instructions[]') + '" required> <button type="button" class="remove-step">✖</button>';
+        container.appendChild(div);
+    }
 
-        function updateOptions() {
-            const selected = Array.from(selects).map(s => s.value).filter(v => v);
-            selects.forEach(s => {
-                Array.from(s.options).forEach(o => {
-                    o.disabled = o.value && selected.includes(o.value) && o.value !== s.value;
-                });
-            });
+    document.getElementById('add-ingredient').addEventListener('click', () => addStep('ingredients-container'));
+    document.getElementById('add-instruction').addEventListener('click', () => addStep('instructions-container'));
+
+    document.addEventListener('click', (e) => {
+        if (e.target.classList.contains('remove-step')) {
+            e.target.parentElement.remove();
         }
-
-        selects.forEach(s => s.addEventListener('change', updateOptions));
-        updateOptions();
     });
+});
 </script>

@@ -88,11 +88,16 @@ class RecipeController {
             $description  = trim($_POST['description'] ?? '');
             $categories   = $_POST['category'] ?? [];
             $difficulty   = $_POST['difficulty'] ?? 'easy';
-            $ingredients  = trim($_POST['ingredients'] ?? '');
-            $instructions = trim($_POST['instructions'] ?? '');
             $prep_time    = (int)($_POST['prep_time'] ?? 0);
-            $cook_time    = (int)($_POST['cook_time'] ?? 0);
             $servings     = (int)($_POST['servings'] ?? 0);
+
+            // 🔹 Gestion des ingrédients et instructions dynamiques
+            $ingredients  = isset($_POST['ingredients']) && is_array($_POST['ingredients'])
+                ? implode("\n", array_map('trim', $_POST['ingredients']))
+                : '';
+            $instructions = isset($_POST['instructions']) && is_array($_POST['instructions'])
+                ? implode("\n", array_map('trim', $_POST['instructions']))
+                : '';
 
             // Validation des champs obligatoires
             if (empty($title) || empty($ingredients) || empty($instructions)) {
@@ -113,14 +118,12 @@ class RecipeController {
                 }
             }
 
+            // 🔹 Gestion de l'image
             $imagePath = null;
-
             $allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
 
             if (!empty($_FILES['image']['name'])) {
-
                 if (in_array($_FILES['image']['type'], $allowedTypes)) {
-
                     $uploadDir = 'uploads/recipes/';
                     if (!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
 
@@ -128,7 +131,6 @@ class RecipeController {
                     $target = $uploadDir . $filename;
 
                     move_uploaded_file($_FILES['image']['tmp_name'], $target);
-
                     $imagePath = $target;
                 }
             }
@@ -136,19 +138,18 @@ class RecipeController {
             if (!$error) {
                 // Crée la recette via le modèle
                 Recipe::create([
-                    'image' => $imagePath,
-                    'title' => $title,
-                    'description' => $description,
-                    'category' => $categories,
-                    'difficulty' => $difficulty,
-                    'ingredients' => $ingredients,
+                    'image'        => $imagePath,
+                    'title'        => $title,
+                    'description'  => $description,
+                    'category'     => $categories,
+                    'difficulty'   => $difficulty,
+                    'ingredients'  => $ingredients,
                     'instructions' => $instructions,
-                    'prep_time' => $prep_time,
-                    'cook_time' => $cook_time,
-                    'servings' => $servings
+                    'prep_time'    => $prep_time,
+                    'servings'     => $servings
                 ], $_SESSION['user']['id']);
 
-                // Redirection immédiate pour éviter le double POST
+                // Redirection pour éviter le double POST
                 header("Location: index.php?page=recipes");
                 exit;
             }
