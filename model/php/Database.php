@@ -5,8 +5,8 @@ define('DB_NAME', 'bilalkluzumaki');
 define('DB_USER', 'bilalkluzumaki');
 define('DB_PASS', 'Camelia77160'); 
 
+// Website URL
 define('SITE_URL', 'https://cooknshare.ovh/'); 
-
 
 class Database {
     private static ?Database $instance = null;

@@ -1,3 +1,4 @@
+
 -- USERS TABLE
 CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -61,6 +62,16 @@ CREATE TABLE recipe_views (
     viewed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY(user_id) REFERENCES users(id),
     FOREIGN KEY(recipe_id) REFERENCES recipes(id)
+);
+
+CREATE TABLE user_likes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    target_user_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(user_id, target_user_id),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (target_user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
 -- SAMPLE USER
