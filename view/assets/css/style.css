@@ -5,26 +5,30 @@
 /* =========================
    IMPORT & VARIABLES
    ========================= */
+/* Import de la police "Inter" depuis Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
 
+/* Définition des variables CSS pour les couleurs principales */
 :root {
-    --primary: #FF7A00;
-    --bg: #F6F6F8;
-    --card: #FFFFFF;
-    --text: #1C1C1E;
-    --muted: #8E8E93;
-    --border: #E5E5EA;
+    --primary: #FF7A00;   /* couleur principale / accent */
+    --bg: #F6F6F8;        /* fond global */
+    --card: #FFFFFF;       /* fond des cartes */
+    --text: #1C1C1E;      /* texte principal */
+    --muted: #8E8E93;     /* texte secondaire / gris */
+    --border: #E5E5EA;    /* couleur des bordures */
 }
 
 /* =========================
    RESET
    ========================= */
+/* Supprime marges/paddings par défaut et applique box-sizing */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
+/* Styles de base du body */
 body {
     font-family: 'Inter', sans-serif;
     background: var(--bg);
@@ -35,7 +39,7 @@ body {
    GLOBAL
    ========================= */
 .container {
-    padding: 16px;
+    padding: 16px; /* marge intérieure */
 }
 
 h1 { font-size: 22px; font-weight: 600; }
@@ -61,7 +65,7 @@ textarea {
 
 input[type="search"] {
     background: #EFEFF4;
-    border: none;
+    border: none; /* search a un style spécial */
 }
 
 /* =========================
@@ -73,13 +77,16 @@ input[type="search"] {
     border-radius: 12px;
     border: none;
     font-weight: 600;
+    text-decoration: none;
 }
 
+/* Boutons principaux */
 .btn-primary {
     background: var(--primary);
     color: white;
 }
 
+/* Boutons danger / delete */
 .btn-danger {
     background: white;
     border: 1px solid #FF3B30;
@@ -90,30 +97,29 @@ input[type="search"] {
    NAVBAR
    ========================= */
 .navbar {
-    display: none;
+    display: none; /* cachée sur mobile */
 }
 
 /* =========================
    FILTER BAR
    ========================= */
-
-/* Conteneur scrollable */
+/* Conteneur scrollable horizontal */
 .filter-bar-wrapper {
     overflow-x: auto;                  /* scroll horizontal si nécessaire */
     -webkit-overflow-scrolling: touch; /* scroll fluide sur mobile */
-    width: 100%;                        /* prend toute la largeur */
+    width: 100%;                       
 }
 
-/* Barre de boutons */
+/* Barre de boutons filtrants */
 .filter-bar {
-    display: inline-flex;               /* tous les boutons en ligne */
+    display: inline-flex;               /* boutons en ligne */
     gap: 8px;
-    white-space: nowrap;                /* empêcher le retour à la ligne */
+    white-space: nowrap;                /* pas de retour à la ligne */
 }
 
-/* Boutons */
+/* Boutons filtrants */
 .filter-btn {
-    flex: 0 0 auto;                     /* important : ne pas rétrécir */
+    flex: 0 0 auto;                     /* ne pas rétrécir */
     padding: 6px 12px;
     background-color: #f2f2f2;
     border-radius: 12px;
@@ -122,11 +128,13 @@ input[type="search"] {
     transition: background 0.2s;
 }
 
+/* État actif */
 .filter-btn.active {
     background-color: #ff9900;
     color: white;
 }
 
+/* Hover */
 .filter-btn:hover {
     background-color: #e0e0e0;
 }
@@ -135,7 +143,6 @@ input[type="search"] {
 .filter-bar-wrapper::-webkit-scrollbar {
     height: 6px;
 }
-
 .filter-bar-wrapper::-webkit-scrollbar-thumb {
     background: #ccc;
     border-radius: 3px;
@@ -154,20 +161,19 @@ input[type="search"] {
 }
 
 .recipe-card:hover {
-    transform: translateY(-2px);
+    transform: translateY(-2px); /* léger effet hover */
 }
 
-.recipe-card h3 {
-    margin-bottom: 10px;
-}
+.recipe-card h3 { margin-bottom: 10px; }
 
-/* HEADER */
+/* HEADER de la carte */
 .card-header {
     display: flex;
     align-items: center;
     margin-bottom: 10px;
 }
 
+/* Avatar utilisateur */
 .card-avatar {
     width: 36px;
     height: 36px;
@@ -176,12 +182,13 @@ input[type="search"] {
     margin-right: 10px;
 }
 
+/* Nom utilisateur */
 .card-user {
     font-size: 13px;
     font-weight: 500;
 }
 
-/* IMAGE */
+/* IMAGE de la recette */
 .card-image {
     font-size: 40px;
     text-align: center;
@@ -193,7 +200,6 @@ input[type="search"] {
     font-size: 15px;
     font-weight: 600;
 }
-
 .card-desc {
     font-size: 13px;
     color: var(--muted);
@@ -219,44 +225,14 @@ input[type="search"] {
 /* =========================
    PROFILE
    ========================= */
-.profile-header {
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-.profile-header-card {
-    text-align: center;
-    background: white;
-    padding: 20px;
-    border-radius: 20px;
-}
-
-.profile-avatar {
-    width: 90px;
-    height: 90px;
-    border-radius: 50%;
-    background: #eee;
-    margin: auto;
-}
-
-.avatar-img {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    object-fit: cover;
-}
+.profile-header { text-align: center; margin-bottom: 20px; }
+.profile-header-card { text-align: center; background: white; padding: 20px; border-radius: 20px; }
+.profile-avatar { width: 90px; height: 90px; border-radius: 50%; background: #eee; margin: auto; }
+.avatar-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
 
 /* PROFILE MENU */
-.profile-menu {
-    display: flex;
-    justify-content: space-between;
-    margin: 20px 0;
-}
-
-.profile-menu-vertical {
-    margin-top: 20px;
-}
-
+.profile-menu { display: flex; justify-content: space-between; margin: 20px 0; }
+.profile-menu-vertical { margin-top: 20px; }
 .profile-item {
     display: block;
     background: white;
@@ -268,30 +244,17 @@ input[type="search"] {
 }
 
 /* ACTIONS */
-.profile-actions {
-    display: flex;
-    gap: 10px;
-    margin-top: 30px;
-}
-
-.profile-actions .btn {
-    flex: 1;
-}
+.profile-actions { display: flex; gap: 10px; margin-top: 30px; }
+.profile-actions .btn { flex: 1; }
 
 /* FORM */
-.form-card {
-    background: white;
-    padding: 20px;
-    border-radius: 20px;
-}
+.form-card { background: white; padding: 20px; border-radius: 20px; }
 
 /* =========================
    LISTS
    ========================= */
 .ingredient-list li,
-.instruction-list li {
-    margin-bottom: 8px;
-}
+.instruction-list li { margin-bottom: 8px; }
 
 /* =========================
    BOTTOM NAV (MOBILE)
@@ -308,18 +271,404 @@ input[type="search"] {
     padding: 10px 0;
 }
 
-.nav-item {
-    text-align: center;
-    font-size: 10px;
+.nav-item { text-align: center; font-size: 10px; color: var(--muted); }
+.nav-item span { font-size: 18px; }
+.nav-item.active { color: var(--primary); }
+
+
+
+/* =========================================================
+   ✨ ADD RECIPE PAGE ONLY (SAFE IMPROVEMENTS)
+   ========================================================= */
+
+/* ===== PAGE WRAPPER ===== */
+.add-recipe-page {
+    max-width: 700px;
+    margin: 20px auto;
+}
+
+/* ===== HEADER ===== */
+.add-recipe-page .page-header {
+    margin-bottom: 20px;
+}
+
+.add-recipe-page .page-header p {
     color: var(--muted);
+    font-size: 14px;
+    margin-top: 5px;
 }
 
-.nav-item span {
-    font-size: 18px;
+/* ===== FORM CARD EFFECT ===== */
+.add-recipe-page form {
+    background: var(--card);
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
 }
 
-.nav-item.active {
-    color: var(--primary);
+/* ===== FORM SECTIONS ===== */
+.add-recipe-page .form-section {
+    margin-bottom: 25px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+}
+
+.add-recipe-page .form-section:last-child {
+    border-bottom: none;
+}
+
+.add-recipe-page .form-section-title {
+    font-weight: 600;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+/* ===== FORM GROUP ===== */
+.add-recipe-page .form-group {
+    margin-bottom: 15px;
+}
+
+/* ===== INPUT STYLE BOOST ===== */
+.add-recipe-page input,
+.add-recipe-page textarea,
+.add-recipe-page select {
+    background: #FAFAFA;
+    border-radius: 14px;
+}
+
+/* Focus effect (très important UX) */
+.add-recipe-page input:focus,
+.add-recipe-page textarea:focus,
+.add-recipe-page select:focus {
+    outline: none;
+    border-color: var(--primary);
+    background: white;
+    box-shadow: 0 0 0 3px rgba(255, 122, 0, 0.1);
+}
+
+/* ===== STEP ITEMS (ingredients, instructions, categories) ===== */
+.add-recipe-page .ingredient-step,
+.add-recipe-page .instruction-step,
+.add-recipe-page .category-step {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+/* Inputs inside steps */
+.add-recipe-page .ingredient-step input,
+.add-recipe-page .instruction-step input,
+.add-recipe-page .category-step select {
+    flex: 1;
+}
+
+/* ===== REMOVE BUTTON ===== */
+.add-recipe-page .remove-step {
+    border: none;
+    background: #FFE5E3;
+    color: #FF3B30;
+    border-radius: 10px;
+    padding: 8px 10px;
+    cursor: pointer;
+}
+
+.add-recipe-page .remove-step:hover {
+    background: #ffd6d3;
+}
+
+/* ===== ADD BUTTONS ===== */
+.add-recipe-page #add-ingredient,
+.add-recipe-page #add-instruction,
+.add-recipe-page #add-category {
+    margin-top: 10px;
+}
+
+/* ===== FORM ACTIONS ===== */
+.add-recipe-page .form-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 25px;
+}
+
+/* ===== ALERT ===== */
+.add-recipe-page .alert-error {
+    background: #FFE5E3;
+    color: #FF3B30;
+    padding: 12px;
+    border-radius: 12px;
+}
+
+/* ===== SMALL HOVER POLISH ===== */
+.add-recipe-page .btn-primary:hover {
+    transform: translateY(-2px);
+}
+
+.add-recipe-page .btn-secondary:hover {
+    background: #e2e2e7;
+}
+
+/* ===== MOBILE OPTIMIZATION ===== */
+@media (max-width: 480px) {
+    .add-recipe-page form {
+        padding: 15px;
+        border-radius: 16px;
+    }
+}
+
+/* =========================================================
+   ✨ REMOVE UNDERLINES (GLOBAL CLEAN LINKS)
+   ========================================================= */
+
+/* Tous les liens */
+a {
+    text-decoration: none;
+    color: inherit; /* garde la couleur du parent */
+}
+
+/* Liens au hover */
+a:hover {
+    text-decoration: none;
+}
+
+/* Boutons sous forme de lien */
+.btn,
+button {
+    text-decoration: none;
+}
+
+/* Si certains navigateurs ajoutent un style focus */
+a:focus,
+button:focus {
+    outline: none;
+}
+
+/* =========================================================
+   ✨ EDIT PROFILE PAGE (SCOPED CLEAN UI)
+   ========================================================= */
+
+/* ===== WRAPPER ===== */
+.edit-profile {
+    max-width: 500px;
+    margin: 30px auto;
+}
+
+/* ===== CARD ===== */
+.edit-profile .form-card {
+    box-shadow: 0 12px 30px rgba(0,0,0,0.06);
+    border: 1px solid rgba(0,0,0,0.03);
+}
+
+/* ===== TITLE ===== */
+.edit-profile h2 {
+    margin-bottom: 20px;
+}
+
+/* ===== FORM ===== */
+.edit-profile form {
+    margin-top: 10px;
+}
+
+/* ===== LABELS ===== */
+.edit-profile label {
+    margin-top: 15px;
+    font-weight: 500;
+    color: var(--text);
+}
+
+/* ===== INPUTS ===== */
+.edit-profile input {
+    background: #FAFAFA;
+    border-radius: 14px;
+}
+
+/* Focus UX */
+.edit-profile input:focus {
+    outline: none;
+    border-color: var(--primary);
+    background: white;
+    box-shadow: 0 0 0 3px rgba(255,122,0,0.1);
+}
+
+/* File input style */
+.edit-profile input[type="file"] {
+    padding: 10px;
+    background: white;
+}
+
+/* ===== SAVE BUTTON ===== */
+.edit-profile .btn-primary {
+    margin-top: 20px;
+    width: 100%;
+}
+
+.edit-profile .btn-primary:hover {
+    transform: translateY(-2px);
+}
+
+/* ===== BACK BUTTON ===== */
+.edit-profile .form-card > .btn {
+    margin-top: 15px;
+    display: block;
+    text-align: center;
+    background: #f2f2f2;
+}
+
+.edit-profile .form-card > .btn:hover {
+    background: #e5e5ea;
+}
+
+/* ===== ALERTS ===== */
+.edit-profile .success {
+    background: #E6F9F0;
+    color: #1DB954;
+    padding: 10px;
+    border-radius: 10px;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.edit-profile .error {
+    background: #FFE5E3;
+    color: #FF3B30;
+    padding: 10px;
+    border-radius: 10px;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+/* ===== MOBILE ===== */
+@media (max-width: 480px) {
+    .edit-profile .form-card {
+        padding: 15px;
+        border-radius: 16px;
+    }
+}
+
+
+/* =========================================================
+   ✨ EDIT RECIPE PAGE (SCOPED UI UPGRADE)
+   ========================================================= */
+
+/* ===== WRAPPER ===== */
+.edit-recipe {
+    max-width: 700px;
+    margin: 30px auto;
+}
+
+/* ===== TITLE ===== */
+.edit-recipe h2 {
+    margin-bottom: 20px;
+}
+
+/* ===== FORM ===== */
+.edit-recipe form {
+    background: var(--card);
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.05);
+}
+
+/* ===== LABELS ===== */
+.edit-recipe label {
+    display: block;
+    margin-top: 15px;
+    font-weight: 500;
+}
+
+/* ===== INPUTS ===== */
+.edit-recipe input,
+.edit-recipe textarea,
+.edit-recipe select {
+    background: #FAFAFA;
+    border-radius: 14px;
+}
+
+/* Focus UX */
+.edit-recipe input:focus,
+.edit-recipe textarea:focus,
+.edit-recipe select:focus {
+    outline: none;
+    border-color: var(--primary);
+    background: white;
+    box-shadow: 0 0 0 3px rgba(255,122,0,0.1);
+}
+
+/* ===== IMAGE PREVIEW ===== */
+.edit-recipe img {
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+/* Checkbox spacing */
+.edit-recipe input[type="checkbox"] {
+    width: auto;
+    margin-right: 5px;
+}
+
+/* ===== STEP ITEMS ===== */
+.edit-recipe .ingredient-step,
+.edit-recipe .instruction-step,
+.edit-recipe .category-step {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+/* Inputs inside steps */
+.edit-recipe .ingredient-step input,
+.edit-recipe .instruction-step input,
+.edit-recipe .category-step select {
+    flex: 1;
+}
+
+/* ===== REMOVE BUTTON ===== */
+.edit-recipe .remove-step {
+    border: none;
+    background: #FFE5E3;
+    color: #FF3B30;
+    border-radius: 10px;
+    padding: 8px 10px;
+    cursor: pointer;
+}
+
+.edit-recipe .remove-step:hover {
+    background: #ffd6d3;
+}
+
+/* ===== ADD BUTTONS ===== */
+.edit-recipe #add-ingredient,
+.edit-recipe #add-instruction,
+.edit-recipe #add-category {
+    margin-top: 10px;
+}
+
+/* ===== SUBMIT BUTTON ===== */
+.edit-recipe .btn-primary {
+    margin-top: 20px !important;
+    width: 100%;
+}
+
+.edit-recipe .btn-primary:hover {
+    transform: translateY(-2px);
+}
+
+/* ===== ERROR ===== */
+.edit-recipe p[style*="color:red"] {
+    background: #FFE5E3;
+    color: #FF3B30 !important;
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+
+/* ===== MOBILE ===== */
+@media (max-width: 480px) {
+    .edit-recipe form {
+        padding: 15px;
+        border-radius: 16px;
+    }
 }
 
 /* =========================================================
@@ -327,20 +676,11 @@ input[type="search"] {
    ========================================================= */
 @media (min-width: 768px) {
 
-    .container {
-        max-width: 700px;
-        margin: 30px auto;
-    }
+    .container { max-width: 700px; margin: 30px auto; }
 
-    .recipes-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 20px;
-    }
+    .recipes-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
 
-    .bottom-nav {
-        display: none;
-    }
+    .bottom-nav { display: none; }
 
     .navbar {
         display: flex;
@@ -354,12 +694,7 @@ input[type="search"] {
         z-index: 100;
     }
 
-    .nav-links a {
-        margin-left: 15px;
-        text-decoration: none;
-        color: var(--text);
-        font-size: 14px;
-    }
+    .nav-links a { margin-left: 15px; text-decoration: none; color: var(--text); font-size: 14px; }
 }
 
 /* =========================================================
@@ -367,23 +702,13 @@ input[type="search"] {
    ========================================================= */
 @media (min-width: 1024px) {
 
-    .container {
-        max-width: 1100px;
-    }
+    .container { max-width: 1100px; }
 
-    .recipes-grid {
-        grid-template-columns: repeat(3, 1fr);
-    }
+    .recipes-grid { grid-template-columns: repeat(3, 1fr); }
 
-    body {
-        background: #ECECEC;
-    }
+    body { background: #ECECEC; }
 
-    .recipe-card {
-        padding: 18px;
-    }
+    .recipe-card { padding: 18px; }
 
-    .nav-links a:hover {
-        color: var(--primary);
-    }
+    .nav-links a:hover { color: var(--primary); }
 }
