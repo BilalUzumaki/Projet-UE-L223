@@ -646,6 +646,33 @@ input[type="search"] {
         gap: 2rem;
     }
 
+    .recipes-page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2.5rem;
+    }
+
+    .recipes-page-header h1 {
+        margin-bottom: 0;
+    }
+
+    .recipes-page-header form {
+        width: auto;
+        gap: 0.75rem;
+    }
+
+    .recipes-page-header input[type="search"] {
+        width: 25rem; /* Taille fixe confortable sur PC (400px) */
+        flex: none;
+    }
+
+    .recipes-page-header .btn-primary {
+        width: auto;
+        flex: none;
+        padding: 0 2rem !important;
+    }
+
     /* Filtres sur PC (plus besoin de scroller) */
     .filter-bar-wrapper {
         margin: 0 0 2.5rem 0;
@@ -1538,7 +1565,7 @@ input[type="file"] {
    PAGE : ALL RECIPES / BROWSE (REM)
    ============================================================ */
 
-.recipes-page {
+   .recipes-page {
     padding-bottom: 5rem;
 }
 
@@ -1553,24 +1580,37 @@ input[type="file"] {
     margin-bottom: 1rem;
 }
 
-/* Formulaire de recherche mobile */
+/* Formulaire de recherche mobile (CORRIGÉ) */
 .recipes-page-header form {
     display: flex;
     gap: 0.5rem;
     width: 100%;
+    align-items: center; /* Aligne l'input et le bouton sur la même ligne */
 }
 
 .recipes-page-header input[type="search"] {
-    flex: 1;
-    max-width: none !important; /* On laisse l'input prendre la place sur mobile */
-    height: 3rem;
-    border-radius: 0.875rem;
+    flex: 3; /* L'input prend 3x plus de place que le bouton */
+    min-width: 0; 
+    max-width: none !important;
+    height: 3.25rem; /* Un peu plus haut pour le confort tactile */
+    border-radius: 1rem;
     background: var(--card) !important;
+    padding: 0 1rem;
+    font-size: 1rem;
+}
+
+.recipes-page-header .btn-primary {
+    flex: 1; /* Le bouton reste compact */
+    height: 3.25rem;
+    padding: 0 1rem !important;
+    font-size: 0.93rem;
+    border-radius: 1rem;
+    white-space: nowrap; /* Empêche le mot "Search" de se couper */
 }
 
 /* Barre de filtres (Scroll Horizontal) */
 .filter-bar-wrapper {
-    margin: 0 -1rem 1.5rem -1rem; /* Sort du padding container pour coller aux bords */
+    margin: 0 -1rem 1.5rem -1rem; 
     padding: 0.5rem 0;
 }
 
@@ -1579,23 +1619,23 @@ input[type="file"] {
     gap: 0.625rem;
     overflow-x: auto;
     padding: 0 1rem;
-    scrollbar-width: none; /* Cache la scrollbar Firefox */
+    scrollbar-width: none; 
 }
 
 .filter-bar::-webkit-scrollbar {
-    display: none; /* Cache la scrollbar Chrome/Safari */
+    display: none; 
 }
 
 .filter-btn {
     display: inline-block;
     padding: 0.625rem 1.25rem;
-    background: #E8F1F1; /* Bleu pâle maquette */
+    background: #E8F1F1; 
     color: #4A6E6E;
     text-decoration: none;
     border-radius: 2rem;
     font-size: 0.875rem;
     font-weight: 600;
-    white-space: nowrap; /* Empêche le texte de passer à la ligne */
+    white-space: nowrap; 
     transition: all 0.2s;
 }
 
