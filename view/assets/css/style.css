@@ -433,13 +433,13 @@ input[type="search"] {
         padding-bottom: 2rem; /* Reset du padding du bas sur PC */
     }
 
-    .navbar {
+   .navbar {
         display: flex;
-        position: sticky;
+        position: sticky; 
         top: 0;
         z-index: 1100;
-        background: rgba(255, 255, 255, 0.9);
-        backdrop-filter: blur(0.625rem); /* 10px */
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(0.625rem); 
         border-bottom: 0.06rem solid var(--border);
         padding: 1rem 2rem;
         justify-content: space-between;
@@ -633,10 +633,12 @@ input[type="search"] {
 
     .recipes-page-header form {
         width: auto;
+        gap: 0.75rem;
     }
 
     .recipes-page-header input[type="search"] {
-        width: 18.75rem; /* 300px */
+        width: 25rem; 
+        flex: none; 
     }
 
     /* Grille de recettes */
@@ -1580,19 +1582,19 @@ input[type="file"] {
     margin-bottom: 1rem;
 }
 
-/* Formulaire de recherche mobile (CORRIGÉ) */
+/* Formulaire de recherche mobile */
 .recipes-page-header form {
     display: flex;
     gap: 0.5rem;
     width: 100%;
-    align-items: center; /* Aligne l'input et le bouton sur la même ligne */
+    align-items: center; 
 }
 
 .recipes-page-header input[type="search"] {
-    flex: 3; /* L'input prend 3x plus de place que le bouton */
+    flex: 3; 
     min-width: 0; 
     max-width: none !important;
-    height: 3.25rem; /* Un peu plus haut pour le confort tactile */
+    height: 3.25rem; 
     border-radius: 1rem;
     background: var(--card) !important;
     padding: 0 1rem;
@@ -1600,12 +1602,12 @@ input[type="file"] {
 }
 
 .recipes-page-header .btn-primary {
-    flex: 1; /* Le bouton reste compact */
+    flex: 1; 
     height: 3.25rem;
     padding: 0 1rem !important;
     font-size: 0.93rem;
     border-radius: 1rem;
-    white-space: nowrap; /* Empêche le mot "Search" de se couper */
+    white-space: nowrap; 
 }
 
 /* Barre de filtres (Scroll Horizontal) */
